@@ -80,7 +80,7 @@ export default function Home() {
 
     setIsLoading(true);
     try {
-      const response = await generateResponse(input);
+      const response = await generateResponse(input, user?.email);
       const assistantMessage: Message = {
         role: "Ghost AI",
         date: new Date(),
