@@ -74,6 +74,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/sentiment": "^5.0.4",
     "sentiment": "^5.0.2"
   }
 }
