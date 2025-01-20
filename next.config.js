@@ -1,10 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  images: { unoptimized: true },
+
   webpack: (config) => {
     // See https://webpack.js.org/configuration/resolve/#resolvealias
     config.resolve.alias = {
@@ -16,4 +13,10 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+const withPWA = require("next-pwa")({
+  dest: "public",
+  register: true,
+  skipWaiting: true
+});
+
+module.exports = withPWA(nextConfig);
