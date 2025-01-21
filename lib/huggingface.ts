@@ -7,8 +7,9 @@ export async function generateResponse(input: string, user: string | null | unde
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Accept": "application/json"
+        "Accept": "application/json",
         // add Access-Control-Allow-Origin
+        "Access-Control-Allow-Origin": "*"
       },
       body: JSON.stringify({
         "user_id": user,   // Unique identifier for the user
@@ -27,7 +28,11 @@ export async function generateResponse(input: string, user: string | null | unde
   }
 }
 
-fetch(`${API_URL}/health`).then((data) => {
+fetch(`${API_URL}/health`, {
+  headers: {
+    "Access-Control-Allow-Origin": "*"
+  },
+}).then((data) => {
   console.log(data)
 })
 
