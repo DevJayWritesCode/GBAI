@@ -170,7 +170,7 @@ export default function Home() {
   }
 
 
-  return (user && (<div>
+  return (user && (<>
     <div className={`app-background fade-in-image bg-${currentBg}`} />
     <div className="flex h-screen bg-background/30 backdrop-blur-sm relative">
       {/* Overlay for mobile */}
@@ -194,8 +194,8 @@ export default function Home() {
           !isSidebarOpen && "invisible"
         )}>
           <div>
-            <div className="flex items-center justify-between mb-4">
-              Hello {{ user?.email}}
+            <div className="flex items-center justify-start mb-4 text-sm mx-2 space-x-2">
+              <span>Hello</span> <span className="font-bold">{user?.email}</span>
               {isMobile && (
                 <Button
                   variant="ghost"
@@ -273,7 +273,7 @@ export default function Home() {
         }
       </div>
     </div>
-  </div>))
+  </>))
 
     ;
 }
