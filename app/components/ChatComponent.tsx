@@ -33,18 +33,18 @@ export default function ChatComponent({ messages = [], input, setInput, isLoadin
                                     key={i}
                                     className={cn(
                                         "flex gap-4 p-4 rounded-lg",
-                                        message.role === "Ghost AI" && "bg-background/50 backdrop-blur-sm"
+                                        message.role === "assistant" && "bg-background/50 backdrop-blur-sm"
                                     )}
                                 >
                                     <div
                                         className={cn(
                                             "w-8 h-8 rounded-full flex items-center justify-center shrink-0",
-                                            message.role === "Ghost AI"
+                                            message.role === "assistant"
                                                 ? "bg-primary text-primary-foreground"
                                                 : "bg-muted"
                                         )}
                                     >
-                                        {message.role === "Ghost AI" ? (
+                                        {message.role === "assistant" ? (
                                             <MessageSquare size={16} />
                                         ) : (
                                             "U"
@@ -52,10 +52,10 @@ export default function ChatComponent({ messages = [], input, setInput, isLoadin
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <div className="font-medium mb-1 text-sm">
-                                            {message.role === "Ghost AI" ? "Ghost AI" : "You"}
+                                            {message.role === "assistant" ? "Ghost AI" : "You"}
                                         </div>
                                         <div className="text-sm leading-relaxed break-words">
-                                            {message.content}
+                                            {message.message}
                                         </div>
                                     </div>
                                 </div>

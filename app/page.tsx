@@ -7,7 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Sentiment from "sentiment";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth, getChatTitleSummary, getCurrentChat, getUserByEmail, logConversation, signOutUser, getSummary } from "./firebase";
+import { auth, getCurrentChat, getUserByEmail, logConversation, signOutUser, getSummary } from "./firebase";
 import {
   Select,
   SelectContent,
@@ -16,16 +16,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { generateResponse } from "@/lib/huggingface";
+import { generateResponse, getMessages } from "@/lib/huggingface";
 import ChatComponent from "./components/ChatComponent";
 import DailyJournal from "./components/DailyJournal";
 import { redirect } from 'next/navigation'
 import ComingSoon from "./components/ComingSoon";
 
 interface Message {
-  role: "user" | "Ghost AI";
-  date: Date;
-  content: string;
+  role: string;
+  timestamp: Date;
+  message: string;
+  mood: string | null;
 }
 
 export default function Home() {
@@ -48,11 +49,19 @@ export default function Home() {
       else {
         getUserByEmail(user?.email).then((snapshot) => {
           const res = snapshot.val()
-          getChatTitleSummary(Object.keys(res)[0]).then((data) => {
-            const summary = data.val()
+          getMessages(user?.email).then((data) => {
+            const summary: Message[] = data
+            if (summary) {
+              setMessages(summary.reverse())
+            } else
+              setMessages([])
+          }
+          )
+          // getChatTitleSummary(Object.keys(res)[0]).then((data) => {
+          //   const summary = data.val()
 
-            setAllMessages(summary)
-          })
+          //   setAllMessages(summary)
+          // })
         });
         const checkMobile = () => {
           setIsMobile(window.innerWidth < 768);
@@ -73,7 +82,7 @@ export default function Home() {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
 
-    const userMessage: Message = { role: "user", date: new Date(), content: input };
+    const userMessage: Message = { role: "user", timestamp: new Date(), mood: null, message: input };
     setMessages(prev => [...prev, userMessage]);
     setInput("");
     if (isMobile) setIsSidebarOpen(false);
@@ -83,55 +92,39 @@ export default function Home() {
       const response = await generateResponse(input, user?.email);
       const assistantMessage: Message = {
         role: "Ghost AI",
-        date: new Date(),
-        content: response,
+        timestamp: new Date(),
+        mood: null,
+        message: response,
       };
 
       setMessages(prev => [...prev, assistantMessage]);
-
-      getUserByEmail(user?.email).then((snapshot) => {
-        const res = snapshot.val()
-        const data = {
-          ID: Object.keys(res)[0],
-          log: [userMessage, assistantMessage]
-        }
-        const newID = new Date().toString()
-        logConversation(data, currentChatID.length > 0 ? currentChatID : newID).then(() => {
-          setCurrentChatID(currentChatID.length > 0 ? currentChatID : newID)
-          setCurrentChat(currentChatID.length > 0 ? currentChatID : newID);
-        })
-      })
-
 
     } catch (error) {
       console.error("Error:", error);
       const errorMessage: Message = {
         role: "Ghost AI",
-        date: new Date(),
-        content: "I apologize, but I'm having trouble generating a response right now. Please try again later.",
+        timestamp: new Date(),
+        mood: null,
+        message: "I apologize, but I'm having trouble generating a response right now. Please try again later.",
       };
       setMessages(prev => [...prev, errorMessage]);
-      getUserByEmail(user?.email).then((snapshot) => {
-        const res = snapshot.val()
-        const data = {
-          ID: Object.keys(res)[0],
-          log: [userMessage, errorMessage]
-        }
-        const newID = new Date().toString()
-        logConversation(data, currentChatID.length > 0 ? currentChatID : newID).then(() => {
-          setCurrentChatID(currentChatID.length > 0 ? currentChatID : newID)
-          setCurrentChat(currentChatID.length > 0 ? currentChatID : newID);
-        })
-      })
     } finally {
       setIsLoading(false);
     }
     getUserByEmail(user?.email).then((snapshot) => {
       const res = snapshot.val()
-      getChatTitleSummary(Object.keys(res)[0]).then((data) => {
-        const summary = data.val()
-        setAllMessages(summary)
-      })
+      getMessages(user?.email).then((data) => {
+        const summary: Message[] = data
+        if (summary) {
+          setMessages(summary.reverse())
+        } else
+          setMessages([])
+      }
+      )
+      // getChatTitleSummary(Object.keys(res)[0]).then((data) => {
+      //   const summary = data.val()
+      //   setAllMessages(summary)
+      // })
     });
   };
 
@@ -157,7 +150,7 @@ export default function Home() {
         const summary: Message[] = data.val()
         console.log(summary)
         if (summary) {
-          setMessages(Object.values(summary).flat())
+          setMessages(Object.values(summary).flat().reverse())
         } else
           setMessages([])
       })
@@ -177,8 +170,7 @@ export default function Home() {
   }
 
 
-
-  return (user && (<>
+  return (user && (<div>
     <div className={`app-background fade-in-image bg-${currentBg}`} />
     <div className="flex h-screen bg-background/30 backdrop-blur-sm relative">
       {/* Overlay for mobile */}
@@ -198,53 +190,60 @@ export default function Home() {
         )}
       >
         <div className={cn(
-          "h-full w-80 flex flex-col p-4",
+          "h-full w-80 flex flex-col items-between justify-between p-4",
           !isSidebarOpen && "invisible"
         )}>
-          <div className="flex items-center justify-between mb-4">
-            <Button
-              variant="outline"
-              className="flex-1 justify-start gap-2"
-              onClick={
-                initializeChat
-              }
-            >
-              <Plus size={16} />
-              New Chat
-            </Button>
-            {isMobile && (
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              Hello {{ user?.email}}
+              {isMobile && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="ml-2"
+                  onClick={() => setIsSidebarOpen(false)}
+                >
+                  <X size={20} />
+                </Button>
+              )}
+            </div>
+            <div className="flex items-center justify-between mb-4">
               <Button
-                variant="ghost"
-                size="icon"
-                className="ml-2"
-                onClick={() => setIsSidebarOpen(false)}
+                variant="outline"
+                className="flex-1 justify-start gap-2"
+                onClick={
+                  () => setCurrentPage('Chat')
+                }
               >
-                <X size={20} />
+                Chat 💬
               </Button>
-            )}
-          </div>
 
-          <ScrollArea className="flex-1 -mx-4 px-4">
-            {allMessages && Object.keys(allMessages).length > 0 && (
-              <div className="space-y-2">
-                {Object.keys(allMessages).map((m, index) => (
-                  <Button
-                    key={m}
-                    variant="ghost"
-                    onClick={() => {
-                      setCurrentChatID(m);
-                      setCurrentChat(m)
-                    }}
-                    className="w-full justify-start gap-2 text-sm"
-                  >
-                    <MessageSquare size={16} />
-                    <span className="truncate">Chat # {index + 1}</span>
-                  </Button>
-                )
-                )}
-              </div>
-            )}
-          </ScrollArea>
+            </div>
+
+            <div className="flex items-center justify-between mb-4">
+              <Button
+                variant="outline"
+                className="flex-1 justify-start gap-2"
+                onClick={
+                  () => setCurrentPage('Journal')
+                }
+              >
+                Daily Journal 📖
+              </Button>
+            </div>
+
+            <div className="flex items-center justify-between mb-4">
+              <Button
+                variant="outline"
+                className="flex-1 justify-start gap-2"
+                onClick={
+                  () => setCurrentPage('Dreamscape')
+                }
+              >
+                Dreamscape ✨
+              </Button>
+            </div>
+          </div>
 
           <Separator className="my-4" />
           <Button onClick={signOut} variant="ghost" className="justify-start gap-2">
@@ -265,16 +264,6 @@ export default function Home() {
           >
             <Menu size={20} />
           </Button>
-          <Select onValueChange={(value: any) => setCurrentPage(value)} defaultValue="Chat">
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Chat History" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Chat">Chat 💬</SelectItem>
-              <SelectItem value="Journal">Daily Journal 📖</SelectItem>
-              <SelectItem value="Dreamscape">Dreamscape ✨</SelectItem>
-            </SelectContent>
-          </Select>
         </header>
 
         {
@@ -284,7 +273,7 @@ export default function Home() {
         }
       </div>
     </div>
-  </>))
+  </div>))
 
     ;
 }
