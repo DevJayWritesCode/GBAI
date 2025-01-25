@@ -128,7 +128,7 @@ export default function ChatComponent({ messages = [], input, setInput, isLoadin
                                             className={cn(
                                                 "w-8 h-8 rounded-full flex items-center justify-center shrink-0",
                                                 message.role === "Ghost Buddy"
-                                                    ? "bg-primary text-primary-foreground"
+                                                    ? "bg-primary  text-primary-foreground"
                                                     : "bg-muted"
                                             )}
                                         >
