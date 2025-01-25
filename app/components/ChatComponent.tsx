@@ -146,21 +146,15 @@ export default function ChatComponent({ messages = [], input, setInput, isLoadin
                                                 {message.role == 'assistant' || message.role == 'Ghost AI' ? (
                                                     <ReactMarkdown
                                                         components={{
-                                                            code({ node, className, children, ...props }) {
-                                                                const match = /language-(\w+)/.exec(className || '');
-                                                                return match ? (
+                                                            code({ node, className, children, ...props }: any) {
+                                                                return (
                                                                     <SyntaxHighlighter
                                                                         {...props}
                                                                         style={vscDarkPlus}
-                                                                        language={match[1]}
                                                                         PreTag="div"
                                                                     >
                                                                         {String(children).replace(/\n$/, '')}
                                                                     </SyntaxHighlighter>
-                                                                ) : (
-                                                                    <code {...props} className={className}>
-                                                                        {children}
-                                                                    </code>
                                                                 )
                                                             }
                                                         }}
