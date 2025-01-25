@@ -96,6 +96,7 @@ export default function Home() {
     } else {
       setHasMore(false);
     }
+    return olderMessages;
   };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -132,19 +133,10 @@ export default function Home() {
         message: "I apologize, but I'm having trouble generating a response right now. Please try again later.",
       };
       setMessages(prev => [...prev, errorMessage]);
-    } finally {
-      setIsLoading(false);
     }
-    getUserByEmail(user?.email).then((snapshot) => {
-      const res = snapshot.val()
-      getMessages(user?.email, 10).then((data) => {
-        const summary: Message[] = data
-        if (summary) {
-          setMessages(summary)
-        } else
-          setMessages([])
-      })
-    });
+    setIsLoading(false);
+
+
   };
 
   function analyzeMood(inputText: string) {
@@ -329,6 +321,7 @@ export default function Home() {
               handleSubmit={handleSubmit}
               onLoadMore={loadMoreMessages}
               hasMore={hasMore}
+              isLoggedIn={user?.email !== null}
             />
             : currentPage === 'Journal' ? <DailyJournal /> : <ComingSoon setSelectedImage={setSelectedImage} />
         }
