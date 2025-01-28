@@ -11,7 +11,7 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
 
 extend({ GLTFLoader })
 
-function KhronosViewer({ url, message = "Hello there, bright soul ✨! How can I help you today!", onSignOut, onChat, isLoggedIn, isLoading }) {
+function KhronosViewer({ url, message = "Hello there, bright soul ✨! How can I help you today!", onSignOut, onChat, isLoggedIn, isLoading, currentInputSubmit }) {
   const [modelUrl, setModelUrl] = useState(url)
   const [envMap, setEnvMap] = useState(null)
   const [validationReport, setValidationReport] = useState(null)
@@ -23,31 +23,37 @@ function KhronosViewer({ url, message = "Hello there, bright soul ✨! How can I
     exposure: 1
   })
 
-  const [messagePosition, setMessagePosition] = useState([0, 2.5, 0])
+  const [messagePosition, setMessagePosition] = useState([0, 3, 0])
+  const [isMobile, setIsMobile] = useState(false)
+  const [cameraPosition, setCameraPosition] = useState([0, 0, 5])
 
-  // useEffect(() => {
-  //   console.log(message)
-  //   console.log(isLoggedIn)
-  //   // Randomize message position when message changes
-  //   const randomX = (Math.random() - 0.5) * 2 // Range: -1 to 1
-  //   const randomY = message.length < 30 ? 1 : message.length < 60 ? 2.5 : 3
-  //   const randomZ = (Math.random() - 0.5) * 2 // Range: -1 to 1
-  //   setMessagePosition([randomX, randomY, randomZ])
-  // }, [message])
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < 768
+      setIsMobile(mobile)
+      setCameraPosition([0, 0, 7])
+
+
+      // Adjust message position vertically
+      setMessagePosition([0, 3, 0])
+    }
+
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   return (
-    <div
-      className="m-auto w-full h-[82vh]"
-    >
+    <div className="m-auto w-full h-[82vh]">
 
       {isLoggedIn == true && (
         <div className="m-auto w-full flex flex-row items-between justify-between px-5">
-          <div onClick={onSignOut} className="bg-black/50 text-white p-2 rounded rotate-180">
+          <div onClick={onSignOut} className="bg-gray-600/50 text-white p-2 rounded-full rotate-180">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
           </div>
-          <div onClick={onChat} className="bg-gradient-to-r from-indigo-500/50 via-purple-500/50 to-pink-500/50 text-white p-2 rounded">
+          <div onClick={onChat} className="bg-gray-600/50 text-white p-2 rounded-full">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
             </svg>
@@ -56,7 +62,11 @@ function KhronosViewer({ url, message = "Hello there, bright soul ✨! How can I
       )}
       <Canvas
         shadows
-        camera={{ position: [0, 0, 5], near: 0.5, far: 1000 }}
+        camera={{
+          position: cameraPosition,
+          near: 0.5,
+          far: 1000
+        }}
         gl={{
           toneMapping: THREE.ACESFilmicToneMapping,
           toneMappingExposure: settings.exposure
@@ -93,8 +103,8 @@ function KhronosViewer({ url, message = "Hello there, bright soul ✨! How can I
           ref={controlsRef}
           enablePan enableZoom enableRotate
           dampingFactor={0.05}
-          minDistance={6}
-          maxDistance={10}
+          minDistance={isMobile ? 8 : 6}
+          maxDistance={isMobile ? 15 : 10}
         />
 
         {/* Validation HUD :cite[3] */}
@@ -114,20 +124,28 @@ function KhronosViewer({ url, message = "Hello there, bright soul ✨! How can I
         <Html
           position={messagePosition}
           center
-          distanceFactor={2}
+          distanceFactor={isMobile ? 1.6 : 2} // Increased mobile distance factor
           style={{
-            zIndex: 100,
-            width: '150%',
-            margin: 'auto'
+            width: '350vw',
+            maxWidth: '1300px',
+            fontSize: '35pt',
+            pointerEvents: 'none'
           }}
           transform
           sprite
         >
-          <div className={`bg-pink-800/50 ${message.length < 60 ? 'text-3xl' : 'text-lg'} text-white p-5 rounded-lg m-auto w-full`}>
-            {isLoading || !message ?
-              <div className="animate-spin rounded-full m-auto h-20 w-20 border-b-2 p-5 border-primary"></div> :
+          {currentInputSubmit.trim().length > 0 && (
+            <span className='text-white  italic block mb-1 md:mb-2'>
+              You: {currentInputSubmit}
+            </span>
+          )}
+          <div style={{ padding: '50px', borderRadius: '35px' }} className={`bg-gray-800/50 text-white rounded-lg m-auto backdrop-blur-sm`}>
+            {isLoading || !message ? (
+              <div className="animate-spin rounded-full m-auto h-8 w-8 sm:h-12 sm:w-12 md:h-16 md:w-16 border-b-2 border-primary" />
+            ) : (
               <ReactMarkdown
                 components={{
+
                   code({ node, className, children, ...props }) {
                     return (
                       <SyntaxHighlighter
@@ -143,7 +161,7 @@ function KhronosViewer({ url, message = "Hello there, bright soul ✨! How can I
               >
                 {message}
               </ReactMarkdown>
-            }
+            )}
           </div>
         </Html>
       </Canvas>

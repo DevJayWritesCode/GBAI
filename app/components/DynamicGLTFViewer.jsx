@@ -6,6 +6,6 @@ const GLTFViewer = dynamic(() => import('./GLTFViewer'), {
   loading: () => <div style={{ padding: 20 }}>Loading viewer...</div>
 })
 
-export default function DynamicGLTFViewer({ url, message, onSignOut, onChat, isLoggedIn, isLoading }) {
-  return <GLTFViewer url={url} message={message} onSignOut={onSignOut} onChat={onChat} isLoggedIn={isLoggedIn} isLoading={isLoading} />
+export default function DynamicGLTFViewer({ url, message, onSignOut, onChat, isLoggedIn, isLoading, currentInputSubmit }) {
+  return <GLTFViewer url={url} message={message} onSignOut={onSignOut} onChat={onChat} isLoggedIn={isLoggedIn} isLoading={isLoading} currentInputSubmit={currentInputSubmit} />
 }

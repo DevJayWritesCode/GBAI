@@ -407,6 +407,7 @@ export default function Home() {
             />
             : currentPage === 'Journal' ? <DailyJournal /> : currentPage === 'Interact' ?
               <STLViewerPage
+                latestMessage={messages[1]}
                 input={input}
                 setInput={(e: any) => { setInput(e) }}
                 isLoading={isLoading && hasMore}
