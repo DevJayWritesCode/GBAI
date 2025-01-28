@@ -25,15 +25,15 @@ function KhronosViewer({ url, message = "Hello there, bright soul ✨! How can I
 
   const [messagePosition, setMessagePosition] = useState([0, 2, 0])
 
-  useEffect(() => {
-    console.log(message)
-    console.log(isLoggedIn)
-    // Randomize message position when message changes
-    const randomX = (Math.random() - 0.5) * 2 // Range: -1 to 1
-    const randomY = message.length < 30 ? 1 : message.length < 60 ? 2.5 : 3
-    const randomZ = (Math.random() - 0.5) * 2 // Range: -1 to 1
-    setMessagePosition([randomX, randomY, randomZ])
-  }, [message])
+  // useEffect(() => {
+  //   console.log(message)
+  //   console.log(isLoggedIn)
+  //   // Randomize message position when message changes
+  //   const randomX = (Math.random() - 0.5) * 2 // Range: -1 to 1
+  //   const randomY = message.length < 30 ? 1 : message.length < 60 ? 2.5 : 3
+  //   const randomZ = (Math.random() - 0.5) * 2 // Range: -1 to 1
+  //   setMessagePosition([randomX, randomY, randomZ])
+  // }, [message])
 
   return (
     <div
