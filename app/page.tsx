@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { generateResponse, getMessages } from "@/lib/huggingface";
+import { generateResponse, getLatestMood, getMessages } from "@/lib/huggingface";
 import ChatComponent from "./components/ChatComponent";
 import DailyJournal from "./components/DailyJournal";
 import { redirect } from 'next/navigation'
@@ -39,7 +39,7 @@ export default function Home() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [currentBg, setCurrentBg] = useState(1)
+  const [currentBg, setCurrentBg] = useState('#E8E8E8')
   const [currentPage, setCurrentPage] = useState('Interact')
   const [user, loading, error] = useAuthState(auth);
   const [currentChatID, setCurrentChatID] = useState('')
@@ -62,6 +62,10 @@ export default function Home() {
         }
       };
 
+
+      // Update mood background on initial load and message changes
+      updateMoodBackground();
+
       checkMobile();
       window.addEventListener('resize', checkMobile);
       return () => window.removeEventListener('resize', checkMobile);
@@ -74,6 +78,37 @@ export default function Home() {
       setCurrentMessage(lastMessage);
     }
   }, [messages])
+
+  const updateMoodBackground = async () => {
+    if (!user?.email) return;
+    const latestMood = await getLatestMood(user.email);
+    if (latestMood) {
+      // Map mood score to background color index
+      // Map mood to background color
+      switch (latestMood) {
+        case 'happy':
+          setCurrentBg('#FFE4A1'); // Light yellow/warm color
+          break;
+        case 'excited':
+          setCurrentBg('#FFA500'); // Bright orange/energetic color
+          break;
+        case 'sad':
+          setCurrentBg('#4A90E2'); // Blue/cool color
+          break;
+        case 'anxious':
+          setCurrentBg('#B19CD9'); // Light purple/tense color
+          break;
+        case 'angry':
+          setCurrentBg('#FF4D4D'); // Red/intense color
+          break;
+        case 'neutral':
+        default:
+          setCurrentBg('#E8E8E8'); // Neutral/balanced color
+          break;
+      }
+
+    }
+  };
 
   const loadInitialMessages = async () => {
     if (!user?.email) return;
@@ -148,19 +183,7 @@ export default function Home() {
 
   };
 
-  function analyzeMood(inputText: string) {
-    const sentiment = new Sentiment();
-    const result = sentiment.analyze(inputText);
 
-    if (result.score <= 5 && result.score >= -6) {
-      setCurrentBg(result.score)
-    } else if (result.score > 5) {
-      setCurrentBg(5)
-    } else if (result.score < -6) {
-      setCurrentBg(-6)
-    }
-
-  }
 
   const setCurrentChat = (input: string) => {
     console.log(input)
@@ -209,7 +232,9 @@ export default function Home() {
         message: response,
       };
 
-      setCurrentMessage(assistantMessage)
+      updateMoodBackground().then(() => {
+        setCurrentMessage(assistantMessage)
+      });
 
     } catch (error: any) {
       console.error("Error:", error?.message || error);
@@ -229,8 +254,7 @@ export default function Home() {
   return (<>
     <SplashScreen onLoadingComplete={() => setShowSplash(false)} />
     <div className="app-background">
-      {selectedImage && <div className="absolute inset-0 bg-cover bg-center transition-opacity duration-500 ease-in-out" style={{ backgroundImage: `url(${selectedImage})` }} />}
-      <div className={`absolute inset-0 ${`bg-${currentBg}`} opacity-60 transition-all duration-500 ease-in-out`} />
+      {<div className="absolute inset-0 bg-cover bg-center transition-all duration-1000 ease-in-out" style={{ backgroundColor: currentBg }} />}
     </div>
     <div className="flex h-screen bg-background/30 backdrop-blur-sm relative">
       {/* Overlay for mobile */}
@@ -374,7 +398,7 @@ export default function Home() {
             <ChatComponent
               messages={messages}
               input={input}
-              setInput={(e: any) => { analyzeMood(e); setInput(e) }}
+              setInput={(e: any) => { setInput(e) }}
               isLoading={isLoading}
               handleSubmit={handleSubmit}
               onLoadMore={loadMoreMessages}
@@ -384,7 +408,7 @@ export default function Home() {
             : currentPage === 'Journal' ? <DailyJournal /> : currentPage === 'Interact' ?
               <STLViewerPage
                 input={input}
-                setInput={(e: any) => { analyzeMood(e); setInput(e) }}
+                setInput={(e: any) => { setInput(e) }}
                 isLoading={isLoading && hasMore}
                 handleSubmit={handleInteractSubmit}
                 isLoggedIn={user?.email?.includes('@')}

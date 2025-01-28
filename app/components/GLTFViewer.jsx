@@ -123,7 +123,7 @@ function KhronosViewer({ url, message = "Hello there, bright soul ✨! How can I
           transform
           sprite
         >
-          <div className="bg-pink-800/50 text-3xl text-white p-5 rounded-lg m-auto w-full">
+          <div className={`bg-pink-800/50 ${message.length < 60 ? 'text-3xl' : 'text-lg'} text-white p-5 rounded-lg m-auto w-full`}>
             {isLoading || !message ?
               <div className="animate-spin rounded-full m-auto h-20 w-20 border-b-2 p-5 border-primary"></div> :
               <ReactMarkdown

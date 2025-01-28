@@ -60,6 +60,25 @@ export async function getMessages(user: string | null | undefined, limit: number
   }
 }
 
+export async function getLatestMood(user: string | null | undefined): Promise<string> {
+  try {
+    // Get only the latest message (limit = 1)
+    const messages = await getMessages(user, 1);
+
+    // If there are no messages, return a default mood
+    if (!messages || messages.length === 0) {
+      return "neutral";
+    }
+
+    // Return the mood of the latest message
+    return messages[0].mood;
+  } catch (error) {
+    console.error("Error getting latest mood:", error);
+    return "neutral";
+  }
+}
+
+
 fetch(`${API_URL}/health`, {
   headers: {
     "Access-Control-Allow-Origin": "*"
