@@ -30,7 +30,7 @@ function KhronosViewer({ url, message = "Hello there, bright soul ✨! How can I
     console.log(isLoggedIn)
     // Randomize message position when message changes
     const randomX = (Math.random() - 0.5) * 2 // Range: -1 to 1
-    const randomY = message.length < 30 ? 1 : 2.5
+    const randomY = message.length < 30 ? 1 : message.length < 50 ? 2.5 : 3
     const randomZ = (Math.random() - 0.5) * 2 // Range: -1 to 1
     setMessagePosition([randomX, randomY, randomZ])
   }, [message])
@@ -125,7 +125,7 @@ function KhronosViewer({ url, message = "Hello there, bright soul ✨! How can I
         >
           <div className="bg-pink-800/50 text-3xl text-white p-5 rounded-lg m-auto w-full">
             {isLoading || !message ?
-              <div className="animate-spin rounded-full h-20 w-20 border-b-2 border-primary"></div> :
+              <div className="animate-spin rounded-full m-auto h-20 w-20 border-b-2 p-5 border-primary"></div> :
               <ReactMarkdown
                 components={{
                   code({ node, className, children, ...props }) {
