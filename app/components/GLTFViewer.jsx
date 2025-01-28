@@ -30,7 +30,7 @@ function KhronosViewer({ url, message = "Hello there, bright soul ✨! How can I
     console.log(isLoggedIn)
     // Randomize message position when message changes
     const randomX = (Math.random() - 0.5) * 2 // Range: -1 to 1
-    const randomY = message.length < 30 ? 1 : message.length < 50 ? 2.5 : 3
+    const randomY = message.length < 30 ? 1 : message.length < 60 ? 2.5 : 3
     const randomZ = (Math.random() - 0.5) * 2 // Range: -1 to 1
     setMessagePosition([randomX, randomY, randomZ])
   }, [message])
