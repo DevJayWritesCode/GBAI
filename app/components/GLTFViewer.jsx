@@ -23,7 +23,7 @@ function KhronosViewer({ url, message = "Hello there, bright soul ✨! How can I
     exposure: 1
   })
 
-  const [messagePosition, setMessagePosition] = useState([0, 2, 0])
+  const [messagePosition, setMessagePosition] = useState([0, 2.5, 0])
 
   // useEffect(() => {
   //   console.log(message)
