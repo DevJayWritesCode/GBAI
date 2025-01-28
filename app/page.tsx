@@ -66,7 +66,7 @@ export default function Home() {
       window.addEventListener('resize', checkMobile);
       return () => window.removeEventListener('resize', checkMobile);
     }
-  }, [user, loading]);
+  }, [user, loading, currentPage]);
 
   useEffect(() => {
     if (messages.length > 0) {
