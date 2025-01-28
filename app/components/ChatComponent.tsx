@@ -175,7 +175,7 @@ export default function ChatComponent({ messages = [], input, setInput, isLoadin
                 </div>
             </div>
 
-            <div className="border-t border-border p-4 bg-background/50 backdrop-blur-sm">
+            {/* <div className="border-t border-border p-4 bg-background/50 backdrop-blur-sm">
                 <form
                     onSubmit={handleSubmit}
                     className="max-w-3xl mx-auto relative"
@@ -198,7 +198,7 @@ export default function ChatComponent({ messages = [], input, setInput, isLoadin
                         Send
                     </Button>
                 </form>
-            </div>
+            </div> */}
         </>
     )
 }

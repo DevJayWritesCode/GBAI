@@ -22,6 +22,7 @@ import ChatComponent from "./components/ChatComponent";
 import DailyJournal from "./components/DailyJournal";
 import { redirect } from 'next/navigation'
 import ComingSoon from "./components/ComingSoon";
+import STLViewerPage from "./components/STLViewerPage";
 
 interface Message {
   role: string;
@@ -39,13 +40,13 @@ export default function Home() {
   const [isMobile, setIsMobile] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [currentBg, setCurrentBg] = useState(1)
-  const [currentPage, setCurrentPage] = useState('Chat')
+  const [currentPage, setCurrentPage] = useState('Interact')
   const [user, loading, error] = useAuthState(auth);
   const [currentChatID, setCurrentChatID] = useState('')
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
   const [oldestMessageTimestamp, setOldestMessageTimestamp] = useState<number | undefined>(undefined);
-
+  const [currentMessage, setCurrentMessage] = useState<Message | null>(null);
   useEffect(() => {
     if (!loading && user) {
       getUserByEmail(user?.email).then((snapshot) => {
@@ -67,11 +68,19 @@ export default function Home() {
     }
   }, [user, loading]);
 
+  useEffect(() => {
+    if (messages.length > 0) {
+      const lastMessage = messages[messages.length - 1];
+      setCurrentMessage(lastMessage);
+    }
+  }, [messages])
+
   const loadInitialMessages = async () => {
     if (!user?.email) return;
     const data = await getMessages(user.email, 10);
     if (data && data.length > 0) {
       setMessages(data.reverse());
+
       setOldestMessageTimestamp(data[data.length - 1].timestamp);
       setHasMore(data.length >= 10);
     } else {
@@ -180,6 +189,42 @@ export default function Home() {
     window.location.href = '/';
   }
 
+  const handleInteractSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim() || isLoading) return;
+
+    if (!user) {
+      window.location.href = '/login';
+      return;
+    }
+
+    setInput("");
+    setIsLoading(true);
+    try {
+      const response = await generateResponse(input, user?.email);
+      const assistantMessage: Message = {
+        role: "Ghost AI",
+        timestamp: Date.now(),
+        mood: "",
+        message: response,
+      };
+
+      setCurrentMessage(assistantMessage)
+
+    } catch (error: any) {
+      console.error("Error:", error?.message || error);
+      const errorMessage: Message = {
+        role: "Ghost AI",
+        timestamp: Date.now(),
+        mood: "",
+        message: "I apologize, but I'm having trouble generating a response right now. Please try again later.",
+      };
+      setCurrentMessage(errorMessage)
+    }
+    setIsLoading(false);
+
+
+  };
 
   return (<>
     <SplashScreen onLoadingComplete={() => setShowSplash(false)} />
@@ -197,7 +242,7 @@ export default function Home() {
       )}
 
       {/* Sidebar */}
-      <div
+      {/* <div
         className={cn(
           "flex-shrink-0 bg-background/50 backdrop-blur-md border-r border-border transition-all duration-300 overflow-hidden",
           isMobile ? "fixed inset-y-0 left-0 z-50" : "relative",
@@ -258,6 +303,18 @@ export default function Home() {
                 variant="outline"
                 className="flex-1 justify-start gap-2"
                 onClick={
+                  () => user ? setCurrentPage('Interact') : window.location.href = '/login'
+                }
+              >
+                Interact ✨
+              </Button>
+            </div>
+
+            <div className="flex items-center justify-between mb-4">
+              <Button
+                variant="outline"
+                className="flex-1 justify-start gap-2"
+                onClick={
                   () => user ? setCurrentPage('Dreamscape') : window.location.href = '/login'
                 }
               >
@@ -279,7 +336,7 @@ export default function Home() {
             </Button>
           )}
         </div>
-      </div>
+      </div> */}
 
       {/* Main Content */}
       <div
@@ -292,24 +349,25 @@ export default function Home() {
         }}
         style={{ overflowY: 'auto', overscrollBehavior: 'none' }}
       >
-        {isLoading && hasMore && (
+        {/* {isLoading && hasMore && (
           <div className="absolute top-0 left-0 right-0 flex justify-center py-2 bg-background/50 backdrop-blur-sm">
             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
           </div>
-        )}
+        )} */}
         {/* Header */}
-        <header className="h-14 border-b border-border flex items-center px-4 gap-4 bg-background/50 backdrop-blur-sm sticky top-0">
-          <Button
+        {
+          currentPage == 'Chat' && <header className="h-14 border-b border-border flex items-center px-4 gap-4 bg-background/50 backdrop-blur-sm sticky top-0">
+            {/* <Button
             variant="ghost"
             size="icon"
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
           >
             <Menu size={20} />
-          </Button>
-          <h2 className="text-center font-black bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 inline-block text-transparent bg-clip-text">
-            Ghost Buddy AI ✨
-          </h2>
-        </header>
+          </Button> */}
+            <h1 onClick={() => setCurrentPage('Interact')} className="text-center font-black bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 inline-block text-transparent bg-clip-text">
+              Back
+            </h1>
+          </header>}
 
         {
           currentPage === 'Chat' ?
@@ -321,9 +379,16 @@ export default function Home() {
               handleSubmit={handleSubmit}
               onLoadMore={loadMoreMessages}
               hasMore={hasMore}
-              isLoggedIn={user?.email !== null}
+              isLoggedIn={user?.email?.includes('@')}
             />
-            : currentPage === 'Journal' ? <DailyJournal /> : <ComingSoon setSelectedImage={setSelectedImage} />
+            : currentPage === 'Journal' ? <DailyJournal /> : currentPage === 'Interact' ?
+              <STLViewerPage
+                input={input}
+                setInput={(e: any) => { analyzeMood(e); setInput(e) }}
+                isLoading={isLoading && hasMore}
+                handleSubmit={handleInteractSubmit}
+                isLoggedIn={user?.email?.includes('@')}
+                message={currentMessage} onSignOut={signOut} onChat={() => setCurrentPage('Chat')} /> : <ComingSoon setSelectedImage={setSelectedImage} />
         }
       </div>
     </div>
