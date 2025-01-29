@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function About() {
     const router = useRouter();
@@ -11,17 +11,19 @@ export default function About() {
 
     return (
         <div className={`min-h-screen flex flex-row items-center just relative overflow-hidden ${!showArtist ? 'bg-white' : ''}`}>
-            <div
-                className="absolute inset-0 z-0"
-                style={{
-                    backgroundImage: 'url(/splash/6.jpg)',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    opacity: 0.1
-                }}
-            />
+            <div className="absolute inset-0 z-0">
+                <video
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="w-full h-full object-cover opacity-2"
+                >
+                    <source src="/about-bg-2.mp4" type="video/mp4" />
+                </video>
+            </div>
 
-            <div className="relative z-10 w-11/12 lg:w-1/4 m-auto px-4 py-12 space-y-8 p-10 bg-neutral-100">
+            <div className="relative z-10 w-11/12 lg:w-1/4 m-auto px-4 py-12 space-y-8 p-10 bg-neutral-100/80">
                 {!showArtist ? (
                     <div className="space-y-6 text-center">
                         <h1 className="text-6xl font-thin font-sans text-black">Boo!</h1>
