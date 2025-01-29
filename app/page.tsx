@@ -223,6 +223,8 @@ export default function Home() {
 
     setInput("");
     setIsLoading(true);
+    const audio = new Audio('/loading.mp3');
+    audio.play();
     try {
       const response = await generateResponse(input, user?.email);
       const assistantMessage: Message = {
@@ -234,6 +236,9 @@ export default function Home() {
 
       updateMoodBackground().then(() => {
         setCurrentMessage(assistantMessage)
+        audio.pause();
+        const audio2 = new Audio('/pop.mp3');
+        audio2.play();
       });
 
     } catch (error: any) {
@@ -252,7 +257,7 @@ export default function Home() {
   };
 
   return (<>
-    <SplashScreen onLoadingComplete={() => setShowSplash(false)} />
+    {showSplash && <SplashScreen onLoadingComplete={() => setShowSplash(false)} />}
     <div className="app-background">
       {<div className="absolute inset-0 bg-cover bg-center transition-all duration-1000 ease-in-out" style={{ backgroundColor: currentBg }} />}
     </div>

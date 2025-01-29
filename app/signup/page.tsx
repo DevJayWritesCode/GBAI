@@ -39,17 +39,10 @@ export default function page() {
     const [randomImage] = useState(() => Math.floor(Math.random() * 5) + 1);
 
     return (
-        <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
-            <Image
-                src={`/splash/${randomImage}.JPG`}
-                alt="Background"
-                fill
-                className="object-none h-max w-max md:object-cover md:h-screen md:w-screen"
-                priority
-            />
-            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
-            <div className="relative z-10 px-5 py-12 w-full md:max-w-lg mx-auto bg-white/10 backdrop-blur-md rounded-lg shadow-xl">
-                <h1 className="text-4xl text-center font-black bg-gradient-to-r from-indigo-200 via-purple-200 to-pink-200 inline-block text-transparent bg-clip-text drop-shadow-lg mb-8">Ghost buddy sign-up</h1>
+        <div className="bg-neutral-500 relative min-h-screen flex items-center justify-center overflow-hidden">
+            <div className="absolute inset-0"></div>
+            <div className="relative z-10 px-5 py-12 w-full md:max-w-lg mx-auto">
+                <h1 className="text-4xl lg:text-6xl text-center text-neutral-100 font-thin mb-8">Register here</h1>
                 <div className="space-y-4">
                     <div className="space-y-1">
                         <label htmlFor="email" className="block text-sm font-medium text-white">Email</label>

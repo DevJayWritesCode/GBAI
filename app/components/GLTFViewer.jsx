@@ -23,7 +23,7 @@ function KhronosViewer({ url, message = "Hello there, bright soul ✨! How can I
     exposure: 1
   })
 
-  const [messagePosition, setMessagePosition] = useState([0, 3, 0])
+  const [messagePosition, setMessagePosition] = useState([0, 3.5, 0])
   const [isMobile, setIsMobile] = useState(false)
   const [cameraPosition, setCameraPosition] = useState([0, 0, 5])
 
@@ -33,9 +33,8 @@ function KhronosViewer({ url, message = "Hello there, bright soul ✨! How can I
       setIsMobile(mobile)
       setCameraPosition([0, 0, 7])
 
-
       // Adjust message position vertically
-      setMessagePosition([0, 3, 0])
+      setMessagePosition([0, 3.5, 0])
     }
 
     handleResize()
@@ -104,7 +103,7 @@ function KhronosViewer({ url, message = "Hello there, bright soul ✨! How can I
           enablePan enableZoom enableRotate
           dampingFactor={0.05}
           minDistance={isMobile ? 8 : 6}
-          maxDistance={isMobile ? 15 : 10}
+          maxDistance={10}
         />
 
         {/* Validation HUD :cite[3] */}
@@ -182,7 +181,8 @@ function GLTFModel({ url, wireframe, transparent }) {
     const size = box.getSize(new THREE.Vector3())
 
     gltf.scene.position.sub(center)
-    setScale(3 / Math.max(size.x, size.y, size.z)) // Reduced scale factor from 5 to 3
+    const scaleFactor = window.innerWidth < 768 ? 4 : 3
+    setScale(scaleFactor / Math.max(size.x, size.y, size.z))
 
     // Apply PBR material settings
     gltf.scene.traverse((child) => {
@@ -198,11 +198,15 @@ function GLTFModel({ url, wireframe, transparent }) {
       }
     })
 
-    // Play animation if available
+    // Play all animations if available
     if (gltf.animations && gltf.animations.length) {
       const mixer = new THREE.AnimationMixer(gltf.scene)
-      const action = mixer.clipAction(gltf.animations[0])
-      action.play()
+
+      // Create and play all animation actions
+      gltf.animations.forEach((animation) => {
+        const action = mixer.clipAction(animation)
+        action.play()
+      })
 
       // Animation update loop
       const animate = () => {

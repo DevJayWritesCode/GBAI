@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import Image from 'next/image';
 
 export default function ChatComponent({ messages = [], input, setInput, isLoading, handleSubmit, onLoadMore, hasMore, loggedIn }: any) {
     const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -133,7 +134,13 @@ export default function ChatComponent({ messages = [], input, setInput, isLoadin
                                             )}
                                         >
                                             {message.role === "Ghost AI" || message.role == 'assistant' ? (
-                                                <MessageSquare size={16} />
+                                                <Image
+                                                    src="/ghost_pfp.jpg"
+                                                    alt="Ghost Buddy"
+                                                    width={32}
+                                                    height={32}
+                                                    className="rounded-full"
+                                                />
                                             ) : (
                                                 "👤"
                                             )}
