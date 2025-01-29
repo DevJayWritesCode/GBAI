@@ -123,24 +123,30 @@ function KhronosViewer({ url, message = "Hello there, bright soul ✨! How can I
         <Html
           position={messagePosition}
           center
-          distanceFactor={isMobile ? 1.6 : 2} // Increased mobile distance factor
+          distanceFactor={isMobile ? 1.6 : 2}
           style={{
             width: '350vw',
             maxWidth: '1300px',
             fontSize: '35pt',
-            pointerEvents: 'none'
+            pointerEvents: 'none',
+            zIndex: -1 // Place behind the 3D model
           }}
           transform
           sprite
+          renderOrder={-1} // Ensure it renders before the 3D model
         >
           {currentInputSubmit.trim().length > 0 && (
             <span className='text-white  italic block mb-1 md:mb-2'>
               You: {currentInputSubmit}
             </span>
           )}
-          <div style={{ padding: '50px', borderRadius: '35px' }} className={`bg-gray-800/50 text-white rounded-lg m-auto backdrop-blur-sm`}>
+          <div style={{ padding: '50px', borderRadius: '35px' }} className={`bg-gray-800/50 text-white rounded-lg m-auto backdrop-blur-sm overflow-auto`}>
             {isLoading || !message ? (
-              <div className="animate-spin rounded-full m-auto h-8 w-8 sm:h-12 sm:w-12 md:h-16 md:w-16 border-b-2 border-primary" />
+              <div className="flex space-x-2 justify-center items-center">
+                <div className="w-5 h-5 bg-neutral-200 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                <div className="w-5 h-5 bg-neutral-200 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                <div className="w-5 h-5 bg-neutral-200 rounded-full animate-bounce"></div>
+              </div>
             ) : (
               <ReactMarkdown
                 components={{
@@ -181,7 +187,9 @@ function GLTFModel({ url, wireframe, transparent }) {
     const size = box.getSize(new THREE.Vector3())
 
     gltf.scene.position.sub(center)
-    const scaleFactor = window.innerWidth < 768 ? 4 : 3
+    // Adjust model position downward
+    gltf.scene.position.y -= 1.5
+    const scaleFactor = window.innerWidth < 768 ? 4 : 4.7
     setScale(scaleFactor / Math.max(size.x, size.y, size.z))
 
     // Apply PBR material settings
