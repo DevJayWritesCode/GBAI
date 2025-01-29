@@ -14,11 +14,11 @@ export default function RootLayout({
   const pathname = usePathname();
   const router = useRouter();
 
-  // Immediately return about page content if not on /about
-  if (pathname !== '/about') {
-    router.push('/about');
-    return null;
-  }
+  useEffect(() => {
+    if (pathname !== '/about') {
+      router.push('/about');
+    }
+  }, [pathname, router]);
 
   useEffect(() => {
     const handleContextMenu = (e: MouseEvent) => {
@@ -37,6 +37,7 @@ export default function RootLayout({
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <link rel="manifest" href="manifest.json" />
+        <link rel="icon" href="favicon.png" />
       </head>
       <body className={inter.className}>{children}</body>
     </html>
