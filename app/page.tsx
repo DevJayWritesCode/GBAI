@@ -393,7 +393,7 @@ export default function Home() {
           >
             <Menu size={20} />
           </Button> */}
-            <h1 onClick={() => setCurrentPage('Interact')} className="text-center font-black bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 inline-block text-transparent bg-clip-text">
+            <h1 onClick={() => setCurrentPage('Interact')} className="text-center text-gray-700">
               Back
             </h1>
           </header>}

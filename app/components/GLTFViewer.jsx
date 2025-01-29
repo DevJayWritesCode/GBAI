@@ -34,7 +34,7 @@ function KhronosViewer({ url, message = "Hello there, bright soul ✨! How can I
       setCameraPosition([0, 0, 7])
 
       // Adjust message position vertically
-      setMessagePosition([0, 3.5, 0])
+      setMessagePosition([0, 3.2, 0])
     }
 
     handleResize()
