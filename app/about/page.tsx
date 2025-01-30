@@ -23,7 +23,7 @@ export default function About() {
                 </video>
             </div>
 
-            <div className="relative z-10 w-11/12 lg:w-1/4 m-auto px-4 py-12 space-y-8 p-10 bg-neutral-100/80">
+            <div className="relative z-10 w-11/12 lg:w-1/4 m-auto px-4 py-12 space-y-8 p-10 bg-neutral-100/90">
                 {!showArtist ? (
                     <div className="space-y-6 text-center">
                         <h1 className="text-6xl font-thin font-sans text-black">Boo!</h1>
