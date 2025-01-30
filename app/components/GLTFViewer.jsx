@@ -186,9 +186,9 @@ function KhronosViewer({ url, message = "Hello there, bright soul ✨! How can I
       </Canvas>
       {isModalOpen && (
         <div style={{ zIndex: 99999999 }} className="fixed inset-0 bg-black/50 flex items-center justify-center">
-          <div className="bg-neutral-200 rounded-lg p-6 max-w-md w-full mx-4">
+          <div className="bg-neutral-200 rounded-lg p-6 max-w-md w-full mx-2">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-sm font-sans font-normal">Beta 1.0.0 [ January 30, 2024 11:15AM EST ]</h3>
+              <h3 className="text-xs font-sans font-normal">Beta 1.0.0 [ January 30, 2024 11:15AM EST ]</h3>
               <button
                 onClick={() => setIsModalOpen(false)}
                 className="text-gray-500 hover:text-gray-700"
