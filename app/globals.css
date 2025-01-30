@@ -75,9 +75,6 @@
     * {
         @apply border-border;
         touch-action: pan-x pan-y;
-        -webkit-touch-callout: none;
-        -webkit-user-select: none;
-        user-select: none;
     }
     body {
         @apply bg-background text-foreground;

@@ -1,8 +1,7 @@
 "use client"
 import './globals.css';
 import { Inter } from 'next/font/google';
-import { useEffect } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+// import { usePathname, useRouter } from 'next/navigation';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -11,26 +10,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const pathname = usePathname();
-  const router = useRouter();
 
-  useEffect(() => {
-    if (pathname !== '/about') {
-      router.push('/about');
-    }
-  }, [pathname, router]);
-
-  useEffect(() => {
-    const handleContextMenu = (e: MouseEvent) => {
-      e.preventDefault();
-    };
-
-    document.addEventListener('contextmenu', handleContextMenu);
-
-    return () => {
-      document.removeEventListener('contextmenu', handleContextMenu);
-    };
-  }, []);
 
   return (
     <html lang="en">

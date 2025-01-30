@@ -73,6 +73,18 @@ export default function Home() {
   }, [user, loading, currentPage]);
 
   useEffect(() => {
+    const handleContextMenu = (e: MouseEvent) => {
+      e.preventDefault();
+    };
+
+    document.addEventListener('contextmenu', handleContextMenu);
+
+    return () => {
+      document.removeEventListener('contextmenu', handleContextMenu);
+    };
+  }, []);
+
+  useEffect(() => {
     if (messages.length > 0) {
       const lastMessage = messages[messages.length - 1];
       setCurrentMessage(lastMessage);
@@ -223,6 +235,12 @@ export default function Home() {
 
     setInput("");
     setIsLoading(true);
+    setCurrentMessage({
+      role: "Ghost AI",
+      timestamp: Date.now(),
+      mood: "",
+      message: '',
+    })
     const audio = new Audio('/loading.mp3');
     audio.play();
     try {
