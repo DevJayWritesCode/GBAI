@@ -1,7 +1,6 @@
 "use client"
 import './globals.css';
 import { Inter } from 'next/font/google';
-import { useEffect } from 'react';
 // import { usePathname, useRouter } from 'next/navigation';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -12,18 +11,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
 
-
-  useEffect(() => {
-    const handleContextMenu = (e: MouseEvent) => {
-      e.preventDefault();
-    };
-
-    document.addEventListener('contextmenu', handleContextMenu);
-
-    return () => {
-      document.removeEventListener('contextmenu', handleContextMenu);
-    };
-  }, []);
 
   return (
     <html lang="en">
