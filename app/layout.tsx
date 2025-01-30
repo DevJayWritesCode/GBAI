@@ -11,14 +11,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // const pathname = usePathname();
-  // const router = useRouter();
 
-  // useEffect(() => {
-  //   if (pathname !== '/about') {
-  //     router.push('/about');
-  //   }
-  // }, [pathname, router]);
 
   useEffect(() => {
     const handleContextMenu = (e: MouseEvent) => {

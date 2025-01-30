@@ -223,6 +223,12 @@ export default function Home() {
 
     setInput("");
     setIsLoading(true);
+    setCurrentMessage({
+      role: "Ghost AI",
+      timestamp: Date.now(),
+      mood: "",
+      message: '',
+    })
     const audio = new Audio('/loading.mp3');
     audio.play();
     try {
