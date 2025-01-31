@@ -1,5 +1,4 @@
 import { Button } from '@/components/ui/button'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import { MessageSquare } from "lucide-react";
 import React, { useRef, useEffect, useState } from 'react'
 import { cn } from "@/lib/utils";

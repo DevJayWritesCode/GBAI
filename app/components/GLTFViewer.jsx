@@ -1,20 +1,18 @@
 'use client'
 import { useState, useRef, Suspense, useEffect } from 'react'
 import { Canvas, useLoader, useThree, extend } from '@react-three/fiber'
-import { OrbitControls, Grid, Html, useProgress, useGLTF, Environment } from '@react-three/drei'
+import { OrbitControls, Html, useProgress, Environment } from '@react-three/drei'
 import { GLTFLoader } from 'three-stdlib'
 import * as THREE from 'three'
 
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
-import { redirect } from 'next/navigation'
 
 extend({ GLTFLoader })
 
 function KhronosViewer({ url, message = "Hello there, bright soul ✨! How can I help you today!", onSignOut, onChat, isLoggedIn, isLoading, currentInputSubmit }) {
   const [modelUrl, setModelUrl] = useState(url)
-  const [envMap, setEnvMap] = useState(null)
   const [validationReport, setValidationReport] = useState(null)
   const controlsRef = useRef()
   const [settings, setSettings] = useState({
@@ -137,11 +135,15 @@ function KhronosViewer({ url, message = "Hello there, bright soul ✨! How can I
           center
           distanceFactor={isMobile ? 1.6 : 2}
           style={{
+            right: '-680px',
+            margin: 'auto',
+            bottom: '-500px',
+            position: 'absolute',
             width: '350vw',
             maxWidth: '1300px',
             fontSize: '35pt',
             pointerEvents: 'none',
-            zIndex: -1 // Place behind the 3D model
+            zIndex: -1,
           }}
           transform
           sprite

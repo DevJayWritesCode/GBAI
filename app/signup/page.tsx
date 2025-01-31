@@ -3,7 +3,6 @@ import React, { useState } from 'react'
 import { createUser, signIn, updateCredentials } from '../firebase.js'
 import { useRouter } from 'next/navigation.js'
 import { setAlert } from '../mixins'
-import Image from 'next/image'
 
 export default function page() {
 
@@ -35,8 +34,6 @@ export default function page() {
             })
         }
     }
-
-    const [randomImage] = useState(() => Math.floor(Math.random() * 5) + 1);
 
     return (
         <div className="bg-neutral-500 relative min-h-screen flex items-center justify-center overflow-hidden">

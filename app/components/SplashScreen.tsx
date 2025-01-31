@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
 interface SplashScreenProps {
@@ -8,11 +7,6 @@ interface SplashScreenProps {
 export default function SplashScreen({ onLoadingComplete }: SplashScreenProps) {
     const [isVisible, setIsVisible] = useState(true);
     const [isMounted, setIsMounted] = useState(true);
-    const [currentImageIndex, setCurrentImageIndex] = useState(() => {
-        return Math.floor(Math.random() * 5);
-    });
-    const splashImages = ['/splash/1.JPG', '/splash/2.JPG', '/splash/3.JPG', '/splash/4.JPG', '/splash/5.JPG'];
-
     useEffect(() => {
         const audio = new Audio('/pop.mp3');
         audio.play();

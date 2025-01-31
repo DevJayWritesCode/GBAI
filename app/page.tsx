@@ -1,26 +1,12 @@
 "use client";
 
-import { useState, useLayoutEffect, useEffect } from "react";
+import { useState, useEffect } from "react";
 import SplashScreen from "./components/SplashScreen";
-import { Menu, MessageSquare, Plus, PowerIcon, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import Sentiment from "sentiment";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth, getCurrentChat, getUserByEmail, logConversation, signOutUser, getSummary } from "./firebase";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { cn } from "@/lib/utils";
+import { auth, getCurrentChat, getUserByEmail, signOutUser } from "./firebase";
 import { generateResponse, getLatestMood, getMessages } from "@/lib/huggingface";
 import ChatComponent from "./components/ChatComponent";
 import DailyJournal from "./components/DailyJournal";
-import { redirect } from 'next/navigation'
 import ComingSoon from "./components/ComingSoon";
 import STLViewerPage from "./components/STLViewerPage";
 
@@ -34,15 +20,13 @@ interface Message {
 export default function Home() {
   const [showSplash, setShowSplash] = useState(true);
   const [messages, setMessages] = useState<Message[]>([]);
-  const [allMessages, setAllMessages] = useState<{}>({});
   const [input, setInput] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [currentBg, setCurrentBg] = useState('#E8E8E8')
   const [currentPage, setCurrentPage] = useState('Interact')
-  const [user, loading, error] = useAuthState(auth);
-  const [currentChatID, setCurrentChatID] = useState('')
+  const [user, loading] = useAuthState(auth);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
   const [oldestMessageTimestamp, setOldestMessageTimestamp] = useState<number | undefined>(undefined);
@@ -211,11 +195,6 @@ export default function Home() {
       })
 
     })
-  }
-
-  const initializeChat = () => {
-    setMessages([]);
-    setCurrentChatID('')
   }
 
   const signOut = async () => {

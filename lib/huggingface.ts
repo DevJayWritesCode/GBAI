@@ -79,14 +79,5 @@ export async function getLatestMood(user: string | null | undefined): Promise<st
 }
 
 
-fetch(`${API_URL}/health`, {
-  headers: {
-    "Access-Control-Allow-Origin": "*"
-  },
-}).then((data) => {
-  console.log(data)
-});
-
-
 
 

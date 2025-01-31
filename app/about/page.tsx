@@ -2,11 +2,10 @@
 
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { redirect } from 'next/navigation';
 
 export default function About() {
-    const router = useRouter();
     const [showArtist, setShowArtist] = useState(false);
 
     return (
@@ -48,7 +47,7 @@ export default function About() {
                             <br />
 
                             <span className='text-sm font-sans font-thin'>CA:</span>
-                            <span className='text-xs font-sans font-thin cursor-pointer select-none' onClick={() => navigator.clipboard.writeText('')}>-----------------------------------------</span>
+                            <span className='text-xs font-sans font-thin cursor-pointer select-all' onClick={() => navigator.clipboard.writeText('')}>-----------------------------------------</span>
                         </div>
                     </div>
                 ) : (
@@ -87,6 +86,15 @@ export default function About() {
                             className="mr-2"
                         />
                     </Button>
+                    {!showArtist &&
+                        (<Button
+                            variant="ghost"
+                            onClick={() => { window.location.href = '/'; }}
+                            className="hover:bg-gray-100"
+                        >
+                            Back
+                        </Button>)
+                    }
                     <Button
                         variant="ghost"
                         onClick={() => setShowArtist(!showArtist)}
@@ -96,6 +104,6 @@ export default function About() {
                     </Button>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }

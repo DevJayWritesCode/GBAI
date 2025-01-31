@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button'
 import DynamicGLTFViewer from '../components/DynamicGLTFViewer';
-import { redirect } from 'next/dist/server/api-utils';
 
 export default function STLViewerPage({ input, setInput, isLoading, handleSubmit, isLoggedIn, message, onSignOut, onChat, latestMessage }: any) {
     const stlFileUrl = '/GHOST.glb'; // Replace with the path to your STL file

@@ -1,8 +1,7 @@
 "use client"
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { signIn } from '../firebase'
 import { useRouter } from 'next/navigation'
-import { Alert } from "@/components/ui/alert";
 import { setAlert } from '../mixins';
 import Image from 'next/image';
 
@@ -20,8 +19,6 @@ export default function page() {
             setAlert('Login failed!', 'Incorrect Credentials. Please try again.')
         })
     }
-
-    const [randomImage] = useState(() => Math.floor(Math.random() * 5) + 1);
 
     return (
         <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
