@@ -205,7 +205,7 @@ export default function Home() {
 
   const handleInteractSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() || isLoading) return;
+    if (input.length < 1 || !input.trim() || isLoading) return;
 
     if (!user) {
       window.location.href = '/login';
