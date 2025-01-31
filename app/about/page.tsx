@@ -47,7 +47,7 @@ export default function About() {
                             <br />
 
                             <span className='text-sm font-sans font-thin'>CA:</span>
-                            <span className='text-xs font-sans font-thin cursor-pointer select-all' onClick={() => navigator.clipboard.writeText('')}>-----------------------------------------</span>
+                            <span className='text-xs font-sans font-thin cursor-pointer select-all' onClick={() => navigator.clipboard.writeText('uqEQGta2STTqpkorbL22ZDcnubLQWv37MiT3zNHpump')}>uqEQGta2STTqpkorbL22ZDcnubLQWv37MiT3zNHpump</span>
                         </div>
                     </div>
                 ) : (
